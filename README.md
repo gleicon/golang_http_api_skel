@@ -1,26 +1,33 @@
 # Project template
 
-Simple web server template with pre-configured MySQL and Redis.
-This code was derived, copied and adapted from (Alex Fiori)[https://github.com/fiorix]
+Simple web server template with pre-configured MySQL and Redis using stdlib.
+
+This code was derived, modified from (https://github.com/fiorix)
+
+It has the basics for http and logging thru a middleware, config file, Redis and MySQL.
+
+Copy and modify to suit your project. 
+
+Handlers and http middleware are setup inside http.go and handlers.go as a struct with methods.
+
 
 ## Preparing the environment
 
 Prerequisites:
 
 - Git
-- rsync
 - GNU Make
-- [Go](http://golang.org) 1.4 or newer
+- [Go](http://golang.org) 1.6 or newer
 
 First, you should make a copy of this directory, and prepare the new project:
 
-	cp -r api_template foobar
+	cp -r golang_http_api_skel foobar
 	cd foobar
 	./bootstrap.sh
 
 Your project is now called **foobar** and is ready to use.
 
-Make sure the Go compiler is installed and `$GOPATH` is set.
+Make sure the Go compiler, `$GOPATH` is set and the repo is on your src dir.
 
 Install dependencies, and compile:
 
@@ -28,27 +35,26 @@ Install dependencies, and compile:
 	make clean
 	make all
 
-Generate a self-signed SSL certificate (optional):
+Optional: Generate a self-signed SSL certificate (optional):
 
 	cd ssl
 	make
 
-Start Redis if you plan to use it, and set up MySQL (both optional):
+Optional: Start Redis and set up MySQL:
 
 	sudo mysql < assets/files/database.sql
 
-Edit the config file and run the server (check MySQL and Redis settings):
+Edit the config file and run the server
 
 	vi foobar.conf
 	./foobar
 
-Install, uninstall. Edit Makefile and set PREFIX to the target directory:
+Optional: Install, uninstall. Edit Makefile and set PREFIX to the target directory:
 
 	sudo make install
 	sudo make uninstall
 
-Allow non-root process to listen on low ports:
+Optional: Allow non-root process to listen on low ports:
 
 	/sbin/setcap 'cap_net_bind_service=+ep' /opt/foobar/server
 
-Good luck!

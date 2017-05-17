@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
 
 	html "html/template"
 	text "text/template"
@@ -27,9 +25,8 @@ var (
 
 func main() {
 	configFile := flag.String("c", "%name%.conf", "")
-	logFile := flag.String("l", "", "")
 	flag.Usage = func() {
-		fmt.Println("Usage: %name% [-c %name%.conf] [-l logfile]")
+		fmt.Println("Usage: %name% [-c %name%.conf]")
 		os.Exit(1)
 	}
 	flag.Parse()
@@ -38,11 +35,6 @@ func main() {
 	config, err := loadConfig(*configFile)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	// Initialize log.
-	if *logFile != "" {
-		setLog(*logFile)
 	}
 
 	// Parse templates.
@@ -60,30 +52,12 @@ func main() {
 
 	// Start HTTP server.
 	s := new(httpServer)
-	s.init(config, rc, db, os.Stdout)
+	s.init(config, rc, db)
 	go s.ListenAndServe()
 	go s.ListenAndServeTLS()
 
 	// Sleep forever.
 	select {}
-}
-
-func setLog(filename string) {
-	f := openLog(filename)
-	log.SetOutput(f)
-	sigc := make(chan os.Signal, 1)
-	signal.Notify(sigc, syscall.SIGHUP)
-	go func() {
-		// Recycle log file on SIGHUP.
-		var fb *os.File
-		for {
-			<-sigc
-			fb = f
-			f = openLog(filename)
-			log.SetOutput(f)
-			fb.Close()
-		}
-	}()
 }
 
 func openLog(filename string) *os.File {

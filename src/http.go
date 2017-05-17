@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/fiorix/go-redis/redis"
 )
@@ -16,7 +15,7 @@ type httpServer struct {
 	serverMux *http.ServeMux
 }
 
-func (s *httpServer) init(cf *configFile, rc *redis.Client, db *sql.DB, ls *os.File) {
+func (s *httpServer) init(cf *configFile, rc *redis.Client, db *sql.DB) {
 	s.config = cf
 	s.redis = rc
 	s.mysql = db
